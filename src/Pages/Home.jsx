@@ -2,9 +2,34 @@ import React, { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoMenuSharp } from "react-icons/io5";
 import Cards from "./Cards";
+import { FaAngleRight } from "react-icons/fa6";
+import { FaAngleLeft } from "react-icons/fa6";
 
 const Home = () => {
   const [details, setDetails] = useState(null);
+  const [currPage, setCurrPage] = useState(1)
+  const [lastItem, setLastItem] = useState(4)
+  const [firstItem, setFirstItem] = useState(0)
+
+  const itemCount =  details?.length
+  const pageCount = Math.ceil(itemCount/3)
+  const nextPage = () => {
+     if(currPage<=pageCount){
+        setFirstItem(lastItem)
+        setCurrPage(currPage => currPage + 1)
+        setLastItem(Math.min(currPage+1)*4, itemCount)
+     }else return
+  }
+
+  const prevPage = () => {
+    if(currPage>1){
+        setCurrPage(currPage => currPage-1)
+        setLastItem((currPage-1)*4)
+        setFirstItem((currPage-2)*4)
+    }else return
+  }
+  console.log(currPage, firstItem, lastItem);
+
   const api = "https://api.tvmaze.com/search/shows?q=all";
 
   const fetchMovies = async () => {
@@ -12,7 +37,7 @@ const Home = () => {
       const data = await fetch(api);
       const result = await data.json();
       setDetails(result);
-      console.log(result)
+      console.log(result);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -48,9 +73,20 @@ const Home = () => {
           Recommended Movies
         </h1>
         <div className="w-full max-w-[1480px] h-auto pt-4 m-auto flex md:gap-12 gap-7 flex-wrap justify-center">
-          {details &&
-            details.map((item, idx) => <Cards details={item} key={idx} />)}
+          {details?.slice(firstItem, lastItem).map((item, idx) => (
+            <Cards details={item} key={idx} />
+          ))}
           {!details && <h1 className="text-center">Loading...</h1>}
+        </div>
+        <div className="flex justify-center w-full">
+          <div className="flex gap-5 items-center">
+            <button disabled={!firstItem} onClick={() => prevPage()}>
+              <FaAngleLeft />
+            </button>
+            <button disabled={lastItem === itemCount} onClick={() => nextPage()}>
+              <FaAngleRight />
+            </button>
+          </div>
         </div>
       </div>
     </div>
