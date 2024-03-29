@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Home from "./Pages/Home";
 import MovieDetails from "./Pages/MovieDetails";
+import Filtering from "./Pages/Filtering";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +24,9 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
+      {/* <div className="w-[1280px] m-auto h-full">
+        <Filtering />
+      </div> */}
     </>
   );
 }
